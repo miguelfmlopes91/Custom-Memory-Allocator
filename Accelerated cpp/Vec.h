@@ -8,6 +8,7 @@
 
 
 #include <memory>
+#include <algorithm>
 //custom array class to test custom allocations with reference run times
 template <class T> class Vec {
 public:
@@ -34,6 +35,7 @@ public:
     }
     
     size_type size() const {return avail - data;}
+    void clear();
     //iterator funcs
     iterator begin() {return data;}
     const_iterator begin() const{return data;}
@@ -55,7 +57,6 @@ private:
     
     //destroy the elements in the array and free the memory
     void uncreate();
-    
     //support functions for push_back
     void grow();
     void unchecked_append(const T&);
@@ -93,6 +94,18 @@ void Vec<T>::uncreate(){
     //reset points to indicate that the Vec is empty again
     data = limit = avail = 0;
 }
+template <class T>
+void Vec<T>::clear(){
+    if (data) {
+        //clear all elements
+        iterator it = data;
+        while (it != avail) {
+            *it = 0;
+        }
+    }
+    //reset points to indicate that the Vec is empty again
+    data = avail = 0;
+}
 
 template <class T >
 void Vec<T>::grow() {
@@ -107,9 +120,9 @@ void Vec<T>::grow() {
     uncreate();
     
     //reset pointers to point to the newly allocated space
-    data = new_data;
+    data = new_data; //begin
     avail = new_avail;
-    limit = data + new_size;
+    limit = data + new_size;//end
 }
 
 //assumes avail points are allocated but uninitialized space
