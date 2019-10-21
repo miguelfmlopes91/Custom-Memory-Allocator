@@ -43,7 +43,10 @@ public:
     }
     friend std::istream& operator>>(std::istream&, Str&);
     friend std::ostream& operator<<(std::ostream&, const Str&);
-    Str operator+(const Str&, const Str&);
+    Str operator+=(const Str& s){
+        std::copy(s.data.begin(), s.data.end(), std::back_inserter(data));
+        return *this;
+    }
 private:
     Vec<char> data;
 };
@@ -76,3 +79,8 @@ std::ostream& operator<<(std::ostream&os, const Str& s){
     return os;
 }
 
+Str operator+(const Str& s, const Str& t){
+    Str temp = std::move(s);
+    temp+=t;
+    return temp;
+}
